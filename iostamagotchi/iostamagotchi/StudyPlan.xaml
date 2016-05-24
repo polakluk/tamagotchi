@@ -1,0 +1,323 @@
+﻿<phone:PhoneApplicationPage 
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+	xmlns:controls="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls"
+    xmlns:local="clr-namespace:iostamagotchi"
+	xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit" x:Name="StudyPlanPage"
+	mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="800"
+	x:Class="iostamagotchi.StudyPlan"
+	FontFamily="{StaticResource PhoneFontFamilyNormal}"
+	FontSize="{StaticResource PhoneFontSizeNormal}"
+	Foreground="{StaticResource PhoneForegroundBrush}"
+	SupportedOrientations="Portrait" Orientation="Portrait"
+	shell:SystemTray.IsVisible="False">
+	<phone:PhoneApplicationPage.Resources>
+        <local:convertorBooleanToStudying x:Key="convertorBooleanToStudying" />
+        <local:convertorStudyingToVisibility x:Key="convertorStudyingToVisibility" />
+
+        <DataTemplate x:Key="tmplLpProgramItem">
+            <StackPanel Orientation="Vertical">
+                <TextBlock x:Name="tbTitle" HorizontalAlignment="Left" Margin="12,0,0,0" TextWrapping="Wrap" Text="{Binding Title}" d:LayoutOverrides="Height" FontSize="32" />
+                <TextBlock x:Name="tbDesc" HorizontalAlignment="Left" Margin="12,0,0,0" TextWrapping="Wrap" Text="{Binding Desc}" d:LayoutOverrides="Height" FontSize="20" FontStyle="Italic" />
+            </StackPanel>
+		</DataTemplate>
+        <ControlTemplate x:Key="PhoneProgressBarSliderThumb" TargetType="Thumb">
+        	<Rectangle Fill="{TemplateBinding Foreground}" Height="4" IsHitTestVisible="False" Width="4"/>
+        </ControlTemplate>
+        <Style x:Key="PhoneProgressBarSliderStyle" TargetType="Slider">
+        	<Setter Property="Maximum" Value="3000"/>
+        	<Setter Property="Minimum" Value="0"/>
+        	<Setter Property="Value" Value="0"/>
+        	<Setter Property="Opacity" Value="0"/>
+        	<Setter Property="IsTabStop" Value="False"/>
+        	<Setter Property="Template">
+        		<Setter.Value>
+        			<ControlTemplate TargetType="Slider">
+        				<Grid IsHitTestVisible="False">
+        					<Grid x:Name="HorizontalTemplate">
+        						<Grid.ColumnDefinitions>
+        							<ColumnDefinition Width="Auto"/>
+        							<ColumnDefinition Width="Auto"/>
+        							<ColumnDefinition Width="*"/>
+        						</Grid.ColumnDefinitions>
+        						<RepeatButton x:Name="HorizontalTrackLargeChangeDecreaseRepeatButton" Grid.Column="0" Height="0" Template="{x:Null}"/>
+        						<Thumb x:Name="HorizontalThumb" Grid.Column="1" Foreground="{TemplateBinding Foreground}" Height="4" IsTabStop="False" Template="{StaticResource PhoneProgressBarSliderThumb}"/>
+        						<RepeatButton x:Name="HorizontalTrackLargeChangeIncreaseRepeatButton" Grid.Column="2" Height="0" Template="{x:Null}"/>
+        					</Grid>
+        				</Grid>
+        			</ControlTemplate>
+        		</Setter.Value>
+        	</Setter>
+        </Style>
+        <Style x:Key="stylePbHealth" TargetType="ProgressBar">
+        	<Setter Property="Foreground" Value="{StaticResource PhoneAccentBrush}"/>
+        	<Setter Property="Background" Value="{StaticResource PhoneAccentBrush}"/>
+        	<Setter Property="Maximum" Value="100"/>
+        	<Setter Property="IsHitTestVisible" Value="False"/>
+        	<Setter Property="Padding" Value="{StaticResource PhoneHorizontalMargin}"/>
+        	<Setter Property="Template">
+        		<Setter.Value>
+        			<ControlTemplate TargetType="ProgressBar">
+        				<Grid>
+        					<VisualStateManager.VisualStateGroups>
+        						<VisualStateGroup x:Name="CommonStates">
+        							<VisualState x:Name="Determinate"/>
+        							<VisualState x:Name="Indeterminate">
+        								<Storyboard Duration="00:00:04.4" RepeatBehavior="Forever">
+        									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="IndeterminateRoot">
+        										<DiscreteObjectKeyFrame KeyTime="0">
+        											<DiscreteObjectKeyFrame.Value>
+        												<Visibility>Visible</Visibility>
+        											</DiscreteObjectKeyFrame.Value>
+        										</DiscreteObjectKeyFrame>
+        									</ObjectAnimationUsingKeyFrames>
+        									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="DeterminateRoot">
+        										<DiscreteObjectKeyFrame KeyTime="0">
+        											<DiscreteObjectKeyFrame.Value>
+        												<Visibility>Collapsed</Visibility>
+        											</DiscreteObjectKeyFrame.Value>
+        										</DiscreteObjectKeyFrame>
+        									</ObjectAnimationUsingKeyFrames>
+        									<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Value" Storyboard.TargetName="Slider1">
+        										<EasingDoubleKeyFrame KeyTime="00:00:00.5" Value="1000">
+        											<EasingDoubleKeyFrame.EasingFunction>
+        												<ExponentialEase EasingMode="EaseOut" Exponent="1"/>
+        											</EasingDoubleKeyFrame.EasingFunction>
+        										</EasingDoubleKeyFrame>
+        										<LinearDoubleKeyFrame KeyTime="00:00:02.0" Value="2000"/>
+        										<EasingDoubleKeyFrame KeyTime="00:00:02.5" Value="3000">
+        											<EasingDoubleKeyFrame.EasingFunction>
+        												<ExponentialEase EasingMode="EaseIn" Exponent="1"/>
+        											</EasingDoubleKeyFrame.EasingFunction>
+        										</EasingDoubleKeyFrame>
+        									</DoubleAnimationUsingKeyFrames>
+        									<DoubleAnimationUsingKeyFrames BeginTime="00:00:00.2" Storyboard.TargetProperty="Value" Storyboard.TargetName="Slider2">
+        										<EasingDoubleKeyFrame KeyTime="00:00:00.5" Value="1000">
+        											<EasingDoubleKeyFrame.EasingFunction>
+        												<ExponentialEase EasingMode="EaseOut" Exponent="1"/>
+        											</EasingDoubleKeyFrame.EasingFunction>
+        										</EasingDoubleKeyFrame>
+        										<LinearDoubleKeyFrame KeyTime="00:00:02.0" Value="2000"/>
+        										<EasingDoubleKeyFrame KeyTime="00:00:02.5" Value="3000">
+        											<EasingDoubleKeyFrame.EasingFunction>
+        												<ExponentialEase EasingMode="EaseIn" Exponent="1"/>
+        											</EasingDoubleKeyFrame.EasingFunction>
+        										</EasingDoubleKeyFrame>
+        									</DoubleAnimationUsingKeyFrames>
+        									<DoubleAnimationUsingKeyFrames BeginTime="00:00:00.4" Storyboard.TargetProperty="Value" Storyboard.TargetName="Slider3">
+        										<EasingDoubleKeyFrame KeyTime="00:00:00.5" Value="1000">
+        											<EasingDoubleKeyFrame.EasingFunction>
+        												<ExponentialEase EasingMode="EaseOut" Exponent="1"/>
+        											</EasingDoubleKeyFrame.EasingFunction>
+        										</EasingDoubleKeyFrame>
+        										<LinearDoubleKeyFrame KeyTime="00:00:02.0" Value="2000"/>
+        										<EasingDoubleKeyFrame KeyTime="00:00:02.5" Value="3000">
+        											<EasingDoubleKeyFrame.EasingFunction>
+        												<ExponentialEase EasingMode="EaseIn" Exponent="1"/>
+        											</EasingDoubleKeyFrame.EasingFunction>
+        										</EasingDoubleKeyFrame>
+        									</DoubleAnimationUsingKeyFrames>
+        									<DoubleAnimationUsingKeyFrames BeginTime="00:00:00.6" Storyboard.TargetProperty="Value" Storyboard.TargetName="Slider4">
+        										<EasingDoubleKeyFrame KeyTime="00:00:00.5" Value="1000">
+        											<EasingDoubleKeyFrame.EasingFunction>
+        												<ExponentialEase EasingMode="EaseOut" Exponent="1"/>
+        											</EasingDoubleKeyFrame.EasingFunction>
+        										</EasingDoubleKeyFrame>
+        										<LinearDoubleKeyFrame KeyTime="00:00:02.0" Value="2000"/>
+        										<EasingDoubleKeyFrame KeyTime="00:00:02.5" Value="3000">
+        											<EasingDoubleKeyFrame.EasingFunction>
+        												<ExponentialEase EasingMode="EaseIn" Exponent="1"/>
+        											</EasingDoubleKeyFrame.EasingFunction>
+        										</EasingDoubleKeyFrame>
+        									</DoubleAnimationUsingKeyFrames>
+        									<DoubleAnimationUsingKeyFrames BeginTime="00:00:00.8" Storyboard.TargetProperty="Value" Storyboard.TargetName="Slider5">
+        										<EasingDoubleKeyFrame KeyTime="00:00:00.5" Value="1000">
+        											<EasingDoubleKeyFrame.EasingFunction>
+        												<ExponentialEase EasingMode="EaseOut" Exponent="1"/>
+        											</EasingDoubleKeyFrame.EasingFunction>
+        										</EasingDoubleKeyFrame>
+        										<LinearDoubleKeyFrame KeyTime="00:00:02.0" Value="2000"/>
+        										<EasingDoubleKeyFrame KeyTime="00:00:02.5" Value="3000">
+        											<EasingDoubleKeyFrame.EasingFunction>
+        												<ExponentialEase EasingMode="EaseIn" Exponent="1"/>
+        											</EasingDoubleKeyFrame.EasingFunction>
+        										</EasingDoubleKeyFrame>
+        									</DoubleAnimationUsingKeyFrames>
+        									<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Slider1">
+        										<DiscreteDoubleKeyFrame KeyTime="0" Value="1"/>
+        										<DiscreteDoubleKeyFrame KeyTime="00:00:02.5" Value="0"/>
+        									</DoubleAnimationUsingKeyFrames>
+        									<DoubleAnimationUsingKeyFrames BeginTime="00:00:00.2" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Slider2">
+        										<DiscreteDoubleKeyFrame KeyTime="0" Value="1"/>
+        										<DiscreteDoubleKeyFrame KeyTime="00:00:02.5" Value="0"/>
+        									</DoubleAnimationUsingKeyFrames>
+        									<DoubleAnimationUsingKeyFrames BeginTime="00:00:00.4" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Slider3">
+        										<DiscreteDoubleKeyFrame KeyTime="0" Value="1"/>
+        										<DiscreteDoubleKeyFrame KeyTime="00:00:02.5" Value="0"/>
+        									</DoubleAnimationUsingKeyFrames>
+        									<DoubleAnimationUsingKeyFrames BeginTime="00:00:00.6" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Slider4">
+        										<DiscreteDoubleKeyFrame KeyTime="0" Value="1"/>
+        										<DiscreteDoubleKeyFrame KeyTime="00:00:02.5" Value="0"/>
+        									</DoubleAnimationUsingKeyFrames>
+        									<DoubleAnimationUsingKeyFrames BeginTime="00:00:00.8" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="Slider5">
+        										<DiscreteDoubleKeyFrame KeyTime="0" Value="1"/>
+        										<DiscreteDoubleKeyFrame KeyTime="00:00:02.5" Value="0"/>
+        									</DoubleAnimationUsingKeyFrames>
+        								</Storyboard>
+        							</VisualState>
+        						</VisualStateGroup>
+        					</VisualStateManager.VisualStateGroups>
+        					<Grid x:Name="DeterminateRoot" Margin="{TemplateBinding Padding}" Visibility="Visible">
+        						<Rectangle x:Name="ProgressBarTrack" Fill="{TemplateBinding Background}" Height="22" Opacity="0.1" Margin="1,0"/>
+        						<Rectangle x:Name="ProgressBarIndicator" Fill="{TemplateBinding Foreground}" HorizontalAlignment="Left" Height="22" Margin="1,0"/>
+        						<Border BorderThickness="1" Margin="1" d:LayoutOverrides="HorizontalMargin">
+        							<Border.BorderBrush>
+        								<SolidColorBrush Color="{StaticResource PhoneContrastBackgroundColor}"/>
+        							</Border.BorderBrush>
+        						</Border>
+        					</Grid>
+        					<Border x:Name="IndeterminateRoot" Margin="{TemplateBinding Padding}" Visibility="Collapsed">
+        						<Grid>
+        							<Slider x:Name="Slider1" Foreground="{TemplateBinding Foreground}" Style="{StaticResource PhoneProgressBarSliderStyle}"/>
+        							<Slider x:Name="Slider2" Foreground="{TemplateBinding Foreground}" Style="{StaticResource PhoneProgressBarSliderStyle}"/>
+        							<Slider x:Name="Slider3" Foreground="{TemplateBinding Foreground}" Style="{StaticResource PhoneProgressBarSliderStyle}"/>
+        							<Slider x:Name="Slider4" Foreground="{TemplateBinding Foreground}" Style="{StaticResource PhoneProgressBarSliderStyle}"/>
+        							<Slider x:Name="Slider5" Foreground="{TemplateBinding Foreground}" Style="{StaticResource PhoneProgressBarSliderStyle}"/>
+        						</Grid>
+        					</Border>
+        				</Grid>
+        			</ControlTemplate>
+        		</Setter.Value>
+        	</Setter>
+        </Style>
+        <DataTemplate x:Key="tmpSetItem">
+        	<StackPanel Orientation="Horizontal" Height="196" HorizontalAlignment="Stretch" Width="400">
+        		<Grid Width="64" x:Name="gState" Tap="gState_Tap" Margin="0,12,0,0">
+          			<Image x:Name="imgState" Source="{Binding IsStudying, Converter={StaticResource convertorBooleanToStudying}}" VerticalAlignment="Top" HorizontalAlignment="Stretch" Grid.Column="1"/>        			
+				</Grid>
+				<StackPanel Orientation="Vertical" x:Name="spItem" Tap="spItem_Tap" Margin="0" Width="336">
+					<TextBlock x:Name="tbTitle" Text="{Binding Title}" HorizontalAlignment="Left" Margin="24,0,0,0" VerticalAlignment="Top" Style="{StaticResource PhoneTextLargeStyle}" FontSize="42.667"></TextBlock>
+					<ProgressBar Margin="13,4,0,0" x:Name="pbHealth" Value="{Binding Health}" VerticalAlignment="Top" Height="24" Style="{StaticResource stylePbHealth}" >
+						<ProgressBar.Foreground>
+							<LinearGradientBrush EndPoint="400,0" StartPoint="0,0" MappingMode="Absolute">
+								<LinearGradientBrush.RelativeTransform>
+									<CompositeTransform CenterY="0.5" CenterX="0.5"/>
+								</LinearGradientBrush.RelativeTransform>
+								<GradientStop Color="Red"/>
+								<GradientStop Color="#FF49FF09" Offset="1"/>
+							</LinearGradientBrush>
+						</ProgressBar.Foreground>
+					</ProgressBar>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="auto"/>
+							<ColumnDefinition Width="auto"/>
+						</Grid.ColumnDefinitions>
+						<TextBlock x:Name="tbPractise" TextWrapping="Wrap" Text="Practise" Tap="gPractise_Tap" Visibility="{Binding IsStudying, Converter={StaticResource convertorStudyingToVisibility}}" Padding="13,10,13,9" FontSize="29.333" Margin="10,0,0,0">
+							<TextBlock.Foreground>
+								<SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
+							</TextBlock.Foreground>
+						</TextBlock>						
+						<TextBlock x:Name="tbTest" TextWrapping="Wrap" Text="Take test" Tap="gTest_Tap" Visibility="{Binding IsStudying, Converter={StaticResource convertorStudyingToVisibility}}" Padding="13,10,13,9" FontSize="29.333" Grid.Column="1" Margin="54,0,-1,0">
+							<TextBlock.Foreground>
+								<SolidColorBrush Color="{StaticResource PhoneAccentColor}"/>
+							</TextBlock.Foreground>
+						</TextBlock>
+					</Grid>
+				</StackPanel>
+       		</StackPanel>
+        </DataTemplate>
+        <Style x:Key="ListPickerStyle1" TargetType="toolkit:ListPicker">
+        	<Setter Property="Background" Value="{StaticResource PhoneInverseInactiveBrush}"/>
+        	<Setter Property="Foreground" Value="{StaticResource PhoneTextBoxForegroundBrush}"/>
+        	<Setter Property="BorderBrush" Value="{StaticResource PhoneTextBoxBrush}"/>
+        	<Setter Property="BorderThickness" Value="{StaticResource PhoneBorderThickness}"/>
+        	<Setter Property="FontSize" Value="{StaticResource PhoneFontSizeMediumLarge}"/>
+        	<Setter Property="HorizontalContentAlignment" Value="Left"/>
+        	<Setter Property="Margin" Value="{StaticResource PhoneTouchTargetOverhang}"/>
+        	<Setter Property="PickerPageUri" Value="/Microsoft.Phone.Controls.Toolkit;component/ListPicker/ListPickerPage.xaml"/>
+        	<Setter Property="Template">
+        		<Setter.Value>
+        			<ControlTemplate TargetType="toolkit:ListPicker">
+        				<StackPanel>
+        					<VisualStateManager.VisualStateGroups>
+        						<VisualStateGroup x:Name="PickerStates">
+        							<VisualState x:Name="Normal"/>
+        							<VisualState x:Name="Highlighted">
+        								<Storyboard>
+        									<!--
+        									<ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Background" Storyboard.TargetName="Border">
+        										<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneTextBoxEditBackgroundColor}"/>
+        									</ObjectAnimationUsingKeyFrames>
+											-->
+        									<ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="Border">
+        										<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneTextBoxEditBorderBrush}"/>
+        									</ObjectAnimationUsingKeyFrames>
+        								</Storyboard>
+        							</VisualState>
+        							<VisualState x:Name="Disabled">
+        								<Storyboard>
+        									<ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Background" Storyboard.TargetName="Border">
+        										<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource TransparentBrush}"/>
+        									</ObjectAnimationUsingKeyFrames>
+        									<ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="Border">
+        										<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneDisabledBrush}"/>
+        									</ObjectAnimationUsingKeyFrames>
+        									<ObjectAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="Foreground" Storyboard.TargetName="UserControl">
+        										<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneDisabledBrush}"/>
+        									</ObjectAnimationUsingKeyFrames>
+        								</Storyboard>
+        							</VisualState>
+        						</VisualStateGroup>
+        					</VisualStateManager.VisualStateGroups>
+        					<ContentControl ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Foreground="{StaticResource PhoneSubtleBrush}" FontSize="{StaticResource PhoneFontSizeNormal}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="0 0 0 8"/>
+        					<Grid>
+        						<Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+        							<UserControl x:Name="UserControl" Foreground="{TemplateBinding Foreground}">
+        								<StackPanel>
+        									<TextBlock x:Name="MultipleSelectionModeSummary" Margin="8 8 0 8"/>
+        									<Canvas x:Name="ItemsPresenterHost" MinHeight="46">
+        										<ItemsPresenter x:Name="ItemsPresenter">
+        											<ItemsPresenter.RenderTransform>
+        												<TranslateTransform x:Name="ItemsPresenterTranslateTransform"/>
+        											</ItemsPresenter.RenderTransform>
+        										</ItemsPresenter>
+        									</Canvas>
+        								</StackPanel>
+        							</UserControl>
+        						</Border>
+        					</Grid>
+        				</StackPanel>
+        			</ControlTemplate>
+        		</Setter.Value>
+        	</Setter>
+        </Style>
+	</phone:PhoneApplicationPage.Resources>
+
+	<!--LayoutRoot contains the root grid where all other page content is placed-->
+	<Grid x:Name="LayoutRoot">
+		<controls:Panorama Title="study plan">
+
+			<!--Panorama item one-->
+			<!--Panorama item two-->
+			<controls:PanoramaItem x:Name="piSets" Header="Active Sets">
+				<Grid>
+					<ListBox x:Name="lbActiveSets" ItemTemplate="{StaticResource tmpSetItem}"/>
+				</Grid>
+			</controls:PanoramaItem>
+
+			<!--Panorama item one-->
+			<controls:PanoramaItem x:Name="piPlan" Header="Plan">
+				<Grid>
+					<toolkit:ListPicker x:Name="lpProgram" Margin="8,38,132,0" VerticalAlignment="Top" Header="Study Program" ItemTemplate="{StaticResource tmplLpProgramItem}" Canvas.ZIndex="1" SelectionChanged="lpProgram_SelectionChanged" Style="{StaticResource ListPickerStyle1}" />
+					<toolkit:ToggleSwitch x:Name="tsNotifications"  IsChecked="{Binding AllowNotifications, Mode=TwoWay}" Header="Notifications" Margin="0,194,167,193" d:LayoutOverrides="Height"/>
+				</Grid>
+			</controls:PanoramaItem>
+
+			<!--Panorama item two-->
+		</controls:Panorama>
+	</Grid>
+</phone:PhoneApplicationPage>

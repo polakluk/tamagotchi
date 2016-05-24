@@ -1,0 +1,49 @@
+﻿<phone:PhoneApplicationPage 
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+	xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ia="http://schemas.microsoft.com/expression/2010/interactions"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" xmlns:ec="clr-namespace:Microsoft.Expression.Interactivity.Core;assembly=Microsoft.Expression.Interactions" x:Name="StudyMenuPage"
+	mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="768"
+	x:Class="iostamagotchi.StudyMenu"
+	Orientation="Portrait"
+	shell:SystemTray.IsVisible="True" SupportedOrientations="PortraitOrLandscape">
+	<phone:PhoneApplicationPage.Resources>
+		<DataTemplate x:Key="ItemTemplate">
+			<StackPanel x:Name="lbMenuItem" Height="156" Tap="lbMenuItem_Tap">
+				<TextBlock x:Name="tbName" Text="{Binding Name}" Style="{StaticResource PhoneTextExtraLargeStyle}"/>
+				<TextBlock x:Name="tbDesc" Text="{Binding Description}" Style="{StaticResource PhoneTextSmallStyle}" FontSize="21.333"/>
+			</StackPanel>
+		</DataTemplate>
+	</phone:PhoneApplicationPage.Resources>
+
+	<phone:PhoneApplicationPage.FontFamily>
+		<StaticResource ResourceKey="PhoneFontFamilyNormal"/>
+	</phone:PhoneApplicationPage.FontFamily>
+	<phone:PhoneApplicationPage.FontSize>
+		<StaticResource ResourceKey="PhoneFontSizeNormal"/>
+	</phone:PhoneApplicationPage.FontSize>
+	<phone:PhoneApplicationPage.Foreground>
+		<StaticResource ResourceKey="PhoneForegroundBrush"/>
+	</phone:PhoneApplicationPage.Foreground>
+
+	<Grid x:Name="LayoutRoot" Background="Transparent" Height="768" VerticalAlignment="Top">
+        <Grid.RowDefinitions>
+        	<RowDefinition Height="Auto"/>
+        	<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+        
+        <!--TitlePanel contains the name of the application and page title-->
+		<StackPanel x:Name="TitlePanel" Grid.Row="0" Margin="12,17,0,28">
+			<TextBlock x:Name="ApplicationTitle" Text="CHOOSE YOUR ACTIVITY" Style="{StaticResource PhoneTextNormalStyle}"/>
+			<TextBlock x:Name="PageTitle" Text="Study" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+		</StackPanel>
+		<Canvas x:Name="ContentPanel" Height="607" Margin="12,0,12,0" Grid.Row="1" VerticalAlignment="Top">
+			<ListBox x:Name="lbMenu" HorizontalAlignment="Left" Width="440" Height="463" VerticalAlignment="Top" ItemTemplate="{StaticResource ItemTemplate}" ItemsSource="{Binding MenuItems}"/>
+		</Canvas>
+
+		<!--ContentPanel - place additional content here-->
+	</Grid>
+</phone:PhoneApplicationPage>
